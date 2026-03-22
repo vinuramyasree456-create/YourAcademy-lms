@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --watch src --ext ts --exec tsx src/server.ts",
+    "build": "npx prisma generate && npx prisma db push && npx tsx src/seed.ts",
     "start": "tsx src/server.ts"
   },
   "keywords": [],
