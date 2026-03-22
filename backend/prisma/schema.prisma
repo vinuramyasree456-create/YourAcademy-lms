@@ -1,0 +1,99 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int             @id @default(autoincrement())
+  email        String          @unique
+  password     String
+  name         String
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  enrollments  Enrollment[]
+  progress     VideoProgress[]
+  RefreshTokens RefreshToken[]
+}
+
+model Subject {
+  id          Int          @id @default(autoincrement())
+  title       String
+  slug        String       @unique
+  description String
+  isPublished Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  sections    Section[]
+  enrollments Enrollment[]
+}
+
+model Section {
+  id         Int       @id @default(autoincrement())
+  subjectId  Int
+  subject    Subject   @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  title      String
+  orderIndex Int
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  videos     Video[]
+
+  @@unique([subjectId, orderIndex])
+}
+
+model Video {
+  id              Int             @id @default(autoincrement())
+  sectionId       Int
+  section         Section         @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  title           String
+  description     String
+  youtubeUrl      String
+  orderIndex      Int
+  durationSeconds Int?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  progress        VideoProgress[]
+
+  @@unique([sectionId, orderIndex])
+}
+
+model Enrollment {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  subjectId Int
+  subject   Subject  @relation(fields: [subjectId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([userId, subjectId])
+}
+
+model VideoProgress {
+  id                  Int       @id @default(autoincrement())
+  userId              Int
+  user                User      @relation(fields: [userId], references: [id])
+  videoId             Int
+  video               Video     @relation(fields: [videoId], references: [id])
+  lastPositionSeconds Int       @default(0)
+  isCompleted         Boolean   @default(false)
+  completedAt         DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  @@unique([userId, videoId])
+}
+
+model RefreshToken {
+  id         Int       @id @default(autoincrement())
+  userId     Int
+  user       User      @relation(fields: [userId], references: [id])
+  tokenHash  String
+  expiresAt  DateTime
+  revokedAt  DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@index([userId, tokenHash])
+}
