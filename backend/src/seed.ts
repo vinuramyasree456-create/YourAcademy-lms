@@ -90,11 +90,11 @@ async function main() {
       videoTitle: 'HTML & CSS Full Course',
     },
     {
-      title: 'SQL & Database Design',
-      slug: 'sql-database',
-      description: 'Learn how to query databases and design robust schemas.',
-      youtubeId: 'HXV3zeJZ1EQ', // FreeCodeCamp
-      videoTitle: 'SQL Tutorial - Full Database Course',
+      title: 'MongoDB NoSQL Database',
+      slug: 'mongodb',
+      description: 'Learn how to use MongoDB, the leading NoSQL database for modern apps.',
+      youtubeId: 'ExcRbA7fy_A', // FreeCodeCamp MongoDB
+      videoTitle: 'MongoDB Tutorial for Beginners',
     }
   ];
 
